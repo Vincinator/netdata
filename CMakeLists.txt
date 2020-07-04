@@ -16,6 +16,8 @@ find_package(PkgConfig REQUIRED)
 # set(CMAKE_VERBOSE_MAKEFILE 1)
 
 
+set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
+
 # -----------------------------------------------------------------------------
 # Set compilation options according to build type
 

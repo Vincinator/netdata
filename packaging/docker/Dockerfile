@@ -24,10 +24,14 @@ ENV EXTRA_INSTALL_OPTS=$EXTRA_INSTALL_OPTS
 COPY . /opt/netdata.git
 WORKDIR /opt/netdata.git
 
+# Dependencies to build mongoc
+RUN apk update && \
+    apk add --upgrade mongo-c-driver-dev --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/community/
+
 # Install from source
 RUN chmod +x netdata-installer.sh && \
    cp -rp /deps/* /usr/local/ && \
-   ./netdata-installer.sh --dont-wait --dont-start-it ${EXTRA_INSTALL_OPTS} \
+   ./netdata-installer.sh --dont-wait --dont-start-it --disable-telemetry --enable-backend-mongodb --disable-cloud ${EXTRA_INSTALL_OPTS} \
    $([ "$RELEASE_CHANNEL" = stable ] && echo --stable-channel)
 
 # files to one directory
@@ -56,6 +60,10 @@ RUN mkdir -p /app/usr/sbin/ \
 ARG ARCH
 # This image contains preinstalled dependecies
 FROM netdata/base:${ARCH}
+
+RUN apk update && \
+    apk add --upgrade mongo-c-driver-dev --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/community/
+
 
 # Copy files over
 RUN mkdir -p /opt/src
